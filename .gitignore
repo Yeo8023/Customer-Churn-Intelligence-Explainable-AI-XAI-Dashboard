@@ -1,0 +1,33 @@
+# Python Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Distribution / Packaging
+.pytest_cache/
+.coverage
+htmlcov/
+venv/
+src/create_notebook.py
+
+# Local databases and temp files
+*.sqlite3
+*.duckdb_wal
+.DS_Store
+Thumbs.db
+
+# Personal / Career & Interview Notes (Private)
+resume_bullet_points.md
+personal_project_guide.md
+*guide*
+*resume*
+*interview*
+
+
