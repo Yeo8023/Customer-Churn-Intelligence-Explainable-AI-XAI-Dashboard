@@ -109,8 +109,8 @@ This project utilizes the industry-standard **[Telco Customer Churn Dataset](htt
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/ai-churn-intelligence.git
-cd ai-churn-intelligence
+git clone https://github.com/your-username/Customer-Churn-Intelligence-Explainable-AI-XAI-Dashboard.git
+cd Customer-Churn-Intelligence-Explainable-AI-XAI-Dashboard
 ```
 
 ### 2. Set Up Python Virtual Environment (`venv`)
