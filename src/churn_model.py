@@ -117,19 +117,43 @@ def train_and_compare_models(data_dict: dict) -> dict:
     X_test = data_dict["X_test_proc"]
     y_test = data_dict["y_test"]
 
+    print("\n" + "=" * 60)
+    print("OPTUNA BAYESIAN OPTIMIZATION (XGBoost)")
+    print("=" * 60)
+    
+    import optuna
+    from sklearn.model_selection import cross_val_score
+    
+    def objective(trial):
+        params = {
+            'n_estimators': trial.suggest_int('n_estimators', 50, 200),
+            'max_depth': trial.suggest_int('max_depth', 3, 8),
+            'learning_rate': trial.suggest_float('learning_rate', 0.01, 0.2, log=True),
+            'subsample': trial.suggest_float('subsample', 0.6, 1.0),
+            'colsample_bytree': trial.suggest_float('colsample_bytree', 0.6, 1.0),
+            'eval_metric': 'logloss',
+            'random_state': 42
+        }
+        model = XGBClassifier(**params)
+        score = cross_val_score(model, X_train, y_train, cv=3, scoring='roc_auc', n_jobs=-1).mean()
+        return score
+
+    optuna.logging.set_verbosity(optuna.logging.WARNING)
+    study = optuna.create_study(direction='maximize')
+    print("[INFO] Running 15 Optuna trials to find optimal hyperparameters...")
+    study.optimize(objective, n_trials=15)
+    
+    print(f"Best Optuna ROC-AUC (Cross-Val): {study.best_value:.4f}")
+    print(f"Best XGBoost Params: {study.best_params}")
+
     models = {
         "Logistic Regression": LogisticRegression(max_iter=1000, random_state=42),
         "Random Forest": RandomForestClassifier(n_estimators=150, max_depth=8, random_state=42),
-        "XGBoost": XGBClassifier(
-            n_estimators=150,
-            max_depth=4,
-            learning_rate=0.05,
-            eval_metric="logloss",
-            random_state=42
-        )
+        "XGBoost (Optuna Tuned)": XGBClassifier(**study.best_params, eval_metric="logloss", random_state=42)
     }
 
     results = {}
+
     print("\n" + "=" * 60)
     print("MODEL BENCHMARK RESULTS")
     print("=" * 60)
